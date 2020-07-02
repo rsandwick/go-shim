@@ -7,7 +7,6 @@ type cfb8 struct {
 	next    []byte
 	out     []byte
 	pos     int
-
 	decrypt bool
 }
 
@@ -17,11 +16,10 @@ func (x *cfb8) XORKeyStream(dst, src []byte) {
 		blockEnd := x.pos + blockSize
 		x.b.Encrypt(x.out, x.next[x.pos:blockEnd])
 
+		dst[i] = src[i] ^ x.out[0]
 		if x.decrypt {
 			x.next[blockEnd] = src[i]
-		}
-		dst[i] = src[i] ^ x.out[0]
-		if !x.decrypt {
+		} else {
 			x.next[blockEnd] = dst[i]
 		}
 		x.pos++
